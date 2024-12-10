@@ -45,7 +45,7 @@ Igualdade (=)
 Limpeza/Reset (C/AC ou CE)
 
 """
-
+import os
 import math
 
 class Calculadora:
@@ -143,13 +143,22 @@ class Calculadora:
         mantissa = a / (10 ** expoente)
         
         return f"{mantissa:.6f} * 10^{expoente}"
-    
+
+def limpar_terminal():
+    # Comando para limpar o terminal, dependendo do sistema operacional
+    sistema = os.name
+    if sistema == 'nt':  # Windows
+        os.system('cls')
+    else:  # Linux ou macOS
+        os.system('clear')
+   
 def main():
     calc = Calculadora()
     
     while True:
-        print("\n\n                                                                                         | Calculadora Bombril |\n")
-        print("-- Cardápio --")
+        limpar_terminal()
+        print("| Calculadora Bombril |\n")
+        print("- Cardápio -")
         print("1. Somar")
         print("2. Subtrair")
         print("3. Multiplicar")
