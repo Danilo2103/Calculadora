@@ -21,9 +21,9 @@ Graus ↔ Radianos (deg/rad) [Feito]
 Radianos ↔ Graus (rad/deg) [Feito]
 Notação científica (EXP ou E) [Feito]
 Variância [Feito]
-Desvio Padrão (dp)
-Logaritmo decimal (log)
-Logaritmo natural (ln)
+Desvio Padrão (dp) [Feito]
+Logaritmo decimal (log) [Feito]
+Logaritmo natural (ln) [Feito]
 Porcentagem (%)
 
 
@@ -144,6 +144,68 @@ class Calculadora:
         
         return f"{mantissa:.6f} * 10^{expoente}"
 
+    def dp(self, a):
+        variancia = self.variancia(a)  # Calcula a variância
+        return math.sqrt(variancia)
+    
+    def logaritmo_comum(self, numero):
+        if numero <= 0:
+            return "Erro: O número deve ser maior que zero para calcular logaritmos."
+        return math.log10(numero)
+        
+    def logaritmo_natural(self, numero):
+        if numero <= 0:
+            return "Erro: O número deve ser maior que zero para calcular logaritmos."
+        return math.log(numero)
+    
+    def logs(self):
+        # Solicita ao usuário que insira um número
+        try:
+            numero = float(input("Digite o número para calcular os logaritmos: "))
+        except ValueError:
+            return "Erro: Por favor, insira um número válido."
+    
+        log_comum = self.logaritmo_comum(numero)
+        log_natural = self.logaritmo_natural(numero)
+        
+        # Exibindo os resultados
+        if isinstance(log_comum, str):
+            return log_comum
+        if isinstance(log_natural, str):
+            return log_natural
+        
+        return (f"Logaritmo comum (base 10) de {numero}: {log_comum}\n"
+                f"Logaritmo natural (base e) de {numero}: {log_natural}")
+    
+    # Função para calcular aumento de porcentagem
+    def aumento_porcentagem(self, valor_inicial, porcentagem):
+        novo_valor = valor_inicial * (1 + (porcentagem / 100))
+        return novo_valor
+
+    # Função para calcular diminuição de porcentagem
+    def diminuicao_porcentagem(self, valor_inicial, porcentagem):
+        novo_valor = valor_inicial * (1 - abs(porcentagem / 100))
+        return novo_valor
+
+    # Função principal para interagir com o usuário
+    def porcentagem(self):
+        try:
+            # Solicitar ao usuário o valor inicial e a porcentagem
+            valor_inicial = float(input("Digite o valor inicial: "))
+            porcentagem = float(input("Digite a porcentagem (use valor positivo para aumento e negativo para diminuição): "))
+        except ValueError:
+            return "Erro: Por favor, insira números válidos."
+
+        # Calcular o aumento ou diminuição de porcentagem
+        if porcentagem > 0:
+            novo_valor = self.aumento_porcentagem(valor_inicial, porcentagem)
+            return f"O valor após o aumento de {porcentagem}% é: {novo_valor}"
+        elif porcentagem < 0:
+            novo_valor = self.diminuicao_porcentagem(valor_inicial, porcentagem)
+            return f"O valor após a diminuição de {abs(porcentagem)}% é: {novo_valor}"
+        else:
+            return "A porcentagem não pode ser zero."
+    
 def limpar_terminal():
     # Comando para limpar o terminal, dependendo do sistema operacional
     sistema = os.name
@@ -154,10 +216,10 @@ def limpar_terminal():
    
 def main():
     calc = Calculadora()
+    limpar_terminal()
     
     while True:
-        limpar_terminal()
-        print("| Calculadora Bombril |\n")
+        print("\n| Calculadora Bombril |\n")
         print("- Cardápio -")
         print("1. Somar")
         print("2. Subtrair")
@@ -177,6 +239,9 @@ def main():
         print("16. Radianos para graus")
         print("17. Variância")
         print("18. Converter em Notação Científica")
+        print("19. Desvio Padrão")
+        print("20. Logaritmo Comum e Logaritmo Natural")
+        print("21. Porcentagem")
         print("0. Sair\n")
         escolha = input("Digite o número referente a operação que deseja realizar: ")
         
@@ -185,9 +250,11 @@ def main():
             break
         
         if escolha in ['1', '2', '3', '4', '6', '13']:
+            limpar_terminal()
             a = float(input("Digite o primeiro valor: "))
             b = float(input("Digite o segundo valor: "))
-        elif escolha in ['7', '8', '9', '10', '11', '15', '16', '17', '18']:
+        elif escolha in ['8', '9', '10', '11', '18']:
+            limpar_terminal()
             a = float(input("Digite o valor: "))
             
         if escolha == '1':
@@ -199,13 +266,26 @@ def main():
         elif escolha == '4':
             print("Resultado:", calc.divisao(a, b))
         elif escolha == '5':
+            limpar_terminal()
             a = float(input("Digite o valor do radicando: "))
             b = float(input("Digite o valor do índice da raiz: "))
             print("Resultado:", calc.raiz(a, b))
         elif escolha == '6':
             print("Resultado:", calc.potenciacao(a, b))
         elif escolha == '7':
-            print("Resultado:", calc.fatorial(a))
+            limpar_terminal()
+            try:
+                a = input("Digite o valor: ")
+                a = float(a)    # Converte pra float
+                if a.is_integer():  # Verifica se o número é inteiro
+                    a = int(a)  # Converte pra int
+                    print(f"O fatorial de {a} é: {calc.fatorial(a)}")
+                else:
+                    print("Erro: O fatorial só pode ser calculado para números inteiros.")
+            except ValueError:
+                print("Erro: Por favor, digite um número válido.")
+            except Exception as e:
+                print(f"Erro inesperado: {e}")
         elif escolha == '8':
             print("Resultado:", calc.seno(a))
         elif escolha == '9':
@@ -215,6 +295,7 @@ def main():
         elif escolha == '11':
             print("Resultado:", calc.modulo(a))
         elif escolha == '12':
+            limpar_terminal()
             a = float(input("Digite o primeiro valor: "))
             b = float(input("Digite o segundo valor: "))
             c = float(input("Digite o terceiro valor: "))
@@ -222,20 +303,44 @@ def main():
         elif escolha == '13':
             print("Resultado:", calc.media(a, b))
         elif escolha == '14':
+            limpar_terminal()
             a = float(input("Digite a nota da AV1: "))
             b = float(input("Digite a nota da AV2: "))
             print("Resultado:", calc.nota_necessaria(a, b))
         elif escolha == '15':
+            limpar_terminal()
+            a = float(input("Digite o valor em graus: "))
             print("Resultado:", calc.graus_para_radianos(a))
         elif escolha == '16':
+            limpar_terminal()
+            a = float(input("Digite o valor em radianos: "))
             print("Resultado:", calc.radianos_para_graus(a))
         elif escolha == '17':
-            print("Resultado:", calc.variancia(a))
+            limpar_terminal()
+            a = input("Digite os valores em graus, separados por espaço: ")
+            lista_de_valores = [int(x) for x in a.split()]
+            print("Resultado:", calc.variancia(lista_de_valores))
         elif escolha == '18':
             print("Resultado:", calc.notacao_cientifica(a))
+        elif escolha == '19':
+            limpar_terminal()
+            a = input("Digite os valores separados por espaço: ")
+            try:
+                lista_de_valores = [float(x) for x in a.split()]
+                print("Resultado do Desvio Padrão:", calc.dp(lista_de_valores))
+            except ValueError:
+                print("Erro: Todos os valores devem ser números válidos.")
+        elif escolha == '20':
+            limpar_terminal()
+            resultado = calc.logs()
+            print(resultado)
+        elif escolha == '21':
+            limpar_terminal()
+            resultado = calc.porcentagem()
+            print(resultado)
         else:
             print("Opção inválida. Tente novamente.")
-
+    
 if __name__ == "__main__":
     main()
     
@@ -251,5 +356,10 @@ A raiz 5 de 10000 é aproximadamente: 10.0
 Resultado:
 Raiz 4 de 1024: 5.656854249492381
 Raiz 5 de 10000 é aproximadamente: 6.309573444801933
+
+
+
+Melhorar:
+- Mensagens de feedback para o usuário
 
 '''
